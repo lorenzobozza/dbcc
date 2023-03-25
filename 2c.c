@@ -315,8 +315,10 @@ static int signal2scaling_encode(const char *msgname, unsigned id, signal_t *sig
 	assert(o);
 	assert(copts);
 	const char *type = determine_type(sig->bit_length, sig->is_signed, sig->is_floating);
+	/*	KEEP ENCODE RAW INPUT TYPE
 	if (sig->scaling != 1.0 || sig->offset != 0.0)
 		type = "double";
+	*/
 	if (copts->use_id_in_name)
 		fprintf(o, "int encode_can_0x%03x_%s(can_obj_%s_t *o, %s in)", id, sig->name, god, copts->use_doubles_for_encoding ? "double" : type);
 	else
@@ -328,6 +330,8 @@ static int signal2scaling_encode(const char *msgname, unsigned id, signal_t *sig
 	if (copts->generate_asserts) {
 		fputs("\tassert(o);\n", o);
 	}
+
+	/*	IGNORE ENCODE MAX/MIN/SCALE/OFFSET
 	if (signal_are_min_max_valid(sig)) {
 		bool gmax = true;
 		bool gmin = true;
@@ -358,6 +362,8 @@ static int signal2scaling_encode(const char *msgname, unsigned id, signal_t *sig
 		fprintf(o, "\tin += %g;\n", -1.0 * sig->offset);
 	if (sig->scaling != 1.0)
 		fprintf(o, "\tin *= %g;\n", 1.0 / sig->scaling);
+	*/
+
 	fprintf(o, "\to->%s.%s = in;\n", msgname, sig->name); // cast!
 	return fputs("\treturn 0;\n}\n\n", o);
 }
@@ -400,9 +406,10 @@ static int signal2scaling_decode(const char *msgname, unsigned id, signal_t *sig
 			gmin = sig->minimum > 0.0;
 			gmax = sig->maximum < unsigned_max(sig);
 		}
-		if (sig->is_floating) {
+		/** FIXED MINIMUM FOR FLOATS AND SCALED TO FLOATS */
+		if (sig->is_floating || sig->scaling != 1.0 || sig->offset != 0.0) {
 			gmax = true;
-			gmax = true;
+			gmin = true;
 		}
 
 		if (!gmax && !gmin) {
@@ -864,6 +871,7 @@ static int msg2h_types(dbc_t *dbc, FILE *h, dbc2c_options_t *copts)
 	assert(dbc);
 	assert(copts);
 
+	/*	DISABLE SIGNAL VALUES ENUM FOR DBC COMPATIBILITY
 	for (size_t i = 0; i < dbc->val_count; i++) {
 		val_list_t *list = dbc->vals[i];
 		fprintf(h, "typedef enum {\n");
@@ -873,6 +881,7 @@ static int msg2h_types(dbc_t *dbc, FILE *h, dbc2c_options_t *copts)
 		}
 		fprintf(h, "} %s_e;\n\n", list->name);
 	}
+	*/
 
 	for (size_t i = 0; i < dbc->message_count; i++) {
 		can_msg_t *msg = dbc->messages[i];
