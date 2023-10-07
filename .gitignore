@@ -13,17 +13,16 @@ ex*
 *.pdf
 *.html
 *.xhtml
-*.exe
 *.a
 *.so
-
-Debug/
-*.sln
-*.vcxproj*
-dbcc.VC.db
-*.opendb
-
-Release/
+*.obj
+*.pdb
+*.iobj
+*.ipdb
+*.recipe
+*.tlog
+*.FileListAbsolute.txt
+*.log
 
 
 # QtCreator project files

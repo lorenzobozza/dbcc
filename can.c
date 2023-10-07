@@ -145,6 +145,10 @@ static signal_t *ast2signal(mpc_ast_t *top, mpc_ast_t *ast, unsigned can_id)
 	units(mpc_ast_get_child(ast, "unit|string|>"), sig);
 	/*nodes(mpc_ast_get_child(ast, "nodes|node|ident|regex|>"), sig);*/
 
+	/* Custom Node Parser Dynamis */
+	mpc_ast_t* node = mpc_ast_get_child(ast, "node|regex");
+	sig->node = duplicate(node->contents);
+
 	/* process multiplexed values, if present */
 	mpc_ast_t *multiplex = mpc_ast_get_child(ast, "multiplexor|>");
 	if (multiplex) {

@@ -327,6 +327,9 @@ static int signal2scaling_encode(const char *msgname, unsigned id, signal_t *sig
 	if (header)
 		return fputs(";\n", o);
 	fputs(" {\n", o);
+
+	fprintf(o, "// Nodes: %s\n", sig->node);
+
 	if (copts->generate_asserts) {
 		fputs("\tassert(o);\n", o);
 	}
@@ -588,6 +591,9 @@ static int msg_pack(can_msg_t *msg, FILE *c, const char *name, bool motorola_use
 	assert(copts);
 	const bool message_has_signals = motorola_used || intel_used;
 	print_function_name(c, "pack", name, " {\n", false, "uint64_t", false, god);
+
+	fprintf(c, "// TX-Node: %s\n", msg->ecu);
+
 	if (copts->generate_asserts) {
 		fprintf(c, "\tassert(o);\n");
 		fprintf(c, "\tassert(data);\n");

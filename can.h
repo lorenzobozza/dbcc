@@ -53,7 +53,8 @@ typedef struct {
 	unsigned switchval;  /**< if is_multiplexed, this will contain the
 			       value that decodes this signal for the multiplexor */
 	val_list_t *val_list;
-	char *comment;
+	char* comment;
+	char* node;
 } signal_t;
 
 typedef struct {

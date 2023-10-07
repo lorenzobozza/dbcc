@@ -15,6 +15,8 @@
 #include "2json.h"
 #include "options.h"
 
+#define DBCC_VERSION "DYNAMIS"
+
 typedef enum {
 	CONVERT_TO_C,
 	CONVERT_TO_XML,
